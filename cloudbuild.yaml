@@ -12,7 +12,7 @@ steps:
     args:
       - 'run'
       - 'deploy'
-      - 'pal-100976096-service'  # Your Cloud Run service name
+      - 'gopale-100952658-service'  # Your Cloud Run service name
       - '--image'
       - 'us-central1-docker.pkg.dev/$PROJECT_ID/gopale-100952658/my-app:$COMMIT_SHA'
       - '--region'
