@@ -1,0 +1,28 @@
+steps:
+  # Step 1: Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/gopale-100976096/my-app:$COMMIT_SHA', '.']
+  
+  # Step 2: Push the Docker image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/gopale-100976096/my-app:$COMMIT_SHA']
+  
+  # Step 3: Deploy the image to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'pal-100976096-service'  # Your Cloud Run service name
+      - '--image'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/gopale-100976096/my-app:$COMMIT_SHA'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--port'
+      - '80'  # Match your app’s listening port (from src/index.js and Dockerfile)
+      - '--allow-unauthenticated'  # Allow public access for testing
+    entrypoint: 'gcloud'
+
+options:
+  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
